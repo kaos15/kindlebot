@@ -1,0 +1,42 @@
+import os
+import random
+from collections import defaultdict
+
+def parse_clippings(file_path):
+    if not os.path.exists(file_path):
+        print(f"Error: File not found at {file_path}")
+        return {}
+
+    with open(file_path, 'r', encoding='utf-8') as f:
+        text = f.read()
+
+    entries = text.split("==========")
+    highlights_by_book = defaultdict(list)
+
+    for entry in entries:
+        lines = entry.strip().split('\n')
+        if len(lines) >= 3:
+            book_title = lines[0].strip()
+            highlight = lines[-1].strip()
+            if highlight and "Highlight" in entry:
+                highlights_by_book[book_title].append(highlight)
+
+    return highlights_by_book
+
+def recommend_random_books(highlights_by_book, num_books=5):
+    all_books = list(highlights_by_book.keys())
+    if not all_books:
+        return "No books found in your highlights."
+    
+    num_to_choose = min(num_books, len(all_books))
+    recommended = random.sample(all_books, num_to_choose)
+
+    output = "Here are 5 books you might want to reread:\n"
+    for i, book in enumerate(recommended, 1):
+        output += f"{i}. {book}\n"
+    return output
+
+# --- MAIN ---
+file_path = "E:/documents/My Clippings.txt"  # Update as needed
+highlight_data = parse_clippings(file_path)
+print(recommend_random_books(highlight_data))
