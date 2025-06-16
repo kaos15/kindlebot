@@ -1,0 +1,15 @@
+import os
+
+def parse_clippings(file_path):
+    if not os.path.exists(file_path):
+        print(f"Error: File not found at {file_path}")
+        return []
+    with open(file_path, 'r', encoding='utf-8') as f:
+        text = f.read()
+    entries = text.split("==========")
+    highlights = [e.strip() for e in entries if "Highlight" in e]
+    return highlights
+
+# Use the full path to your file here
+clippings = parse_clippings("E:/documents/My Clippings.txt")
+print(clippings)
